@@ -1,0 +1,14 @@
+.Login_Main_Line{
+    max-width: 600px;
+    height: 800px;
+    max-height: 800px;
+    margin: 0 auto;
+    border: rgba(53,108, 213, 0.5) solid 5px;
+}
+
+.Login_Btn{
+    padding: 100px;
+    margin: 0 auto;
+    text-align: center;
+
+}

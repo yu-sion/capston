@@ -1,0 +1,153 @@
+
+.Home_Main{
+    width: 800px;
+    height: 700px;
+    margin : 0 auto;
+    border : rgba(53,108, 213) solid 5px;
+}
+.Home_Logo_Frame_Body{
+    display: block;
+    width: 100%;
+    margin-top : 20px;
+    height: 150px;
+}
+
+.Home_Logo_Img{
+    float: left;
+    width: 200px;
+    height: 100%;
+}
+.Home_Logo_UserInfo_Change_Frame{
+    float: left;
+    margin-left: 30px;
+    margin-top: 1px;
+}
+.Home_Logo_UserInfo_Change_Body{
+    border: rgba(53,108, 213) solid 3px;
+    width: 100%;
+    height: 100%;
+    padding : 10px;
+}
+.Home_Logo_UserInfo_Change_Input{
+    margin-bottom : 5px;
+}
+.Home_Logo_UsrData{
+    float: right;
+    padding-top: 40px;
+    width: 25%;
+    text-align: center;
+}
+
+.Home_Logo_Btn_Logout{
+    margin-left: 7px;
+}
+.Home_Content_Body{
+    display: block;
+    margin-top : 20px;
+    width: 100%;
+}
+
+.Home_Content_SubjectList_Body{
+    width: 40%;
+    height: 300px;
+    border: rgba(53,108, 213) solid 3px;
+    border-radius: 10px 10px / 10px 10px;
+    margin: 0 auto;
+}
+.Home_Content_SubjectList_Data_Body{
+    width: 90%;
+    height: 100%;
+    border-radius: 10px 10px / 10px 10px;
+    margin : 0 auto;
+    
+}
+
+.Home_Content_Add{
+    display: block;
+    width: 100%;
+    height: 30px;
+    border-bottom: rgba(53,108, 213) solid 3px;
+}
+.Home_Content_Subject_View{
+    display: block;
+    width: 100%;
+    height: 270px;
+    margin : 0 auto;
+    overflow: scroll;
+}
+.Home_Content_Subject_Add_Btn, .Home_content_sub_info{
+    float: right;
+    margin-top: 4px;
+    margin-right: 9px;
+}
+.Home_Content_SubList_View_Body{
+    display: inline-block;
+    width: 40%;
+    height: 300px;
+    float: right;
+    margin-right: 50px;
+}
+
+.Home_addSubejct_input{
+    margin: 10px 0;
+}
+
+.Home_Content_SubList_View{
+    padding : 10px;
+    border: rgba(53,108, 213) solid 2px;
+    border-radius: 20px 20px / 20px 20px;
+}
+
+.Home_Content_SubjectList_Data{
+    width: 100%;
+    height: 100%;
+    padding-left: 20px;
+}
+.Home_Content_SubjectList_Data_ClassName{
+    width: 50%;
+    height: 100%;
+    /* display: inline-block; */
+
+}
+.Home_Content_Option_Frame{
+    width: 100%;
+    height: 100%;
+    border: 3px solid blue;
+    overflow: scroll;
+}
+.Home_Content_SubjectList_Btn_Body{
+    display: inline-block;
+    float: right;
+    margin-right: 30px;
+}
+.Home_Content_SubjectList_Btn{
+    float: right;
+    margin-right: 5px;
+    border-radius: 10px 10px / 10px 10px;
+}
+
+.Home_Content_Option_StdList_Permit{
+    width: 90%;
+    height: 20px;
+    margin : 0 auto;
+    border : 1px solid blue;
+    margin-top : 5px;
+}
+.Home_Content_Option_StdList_Permit>button{
+    float: right;
+}
+
+.Home_Content_SubList_Option_View_Body_FileData{
+    width: 100%;
+    height: 30px;
+}
+.Home_Option_Content_Question_List{
+    width: 90%;
+    height: 100px;
+    margin : 0 auto;
+    margin-top : 20px;
+}
+.Home_Option_Content_Question_title{
+    width: 100%;
+    height: 20px;
+}
