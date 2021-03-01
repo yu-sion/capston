@@ -11,23 +11,25 @@ export default function Home(props){
     const [subjectData, setSubjectData] = useState(null);       // 과목 데이터
     const [infoChange, setInfoChange] = useState(null);         // 정보 수정
     const [subjectUpdate, setSubjectUpdate] = useState(null);   // 과목 수정, 삭제 
-    const [fileData, setFileData] = useState(null);
-    const [questionData, setQuestionData] = useState(null);
-    const [optionState, setOptionState] = useState(null);
-    const [clickEvent, setClickEvent] = useState({
+    const [fileData, setFileData] = useState(null);             // 자료실
+    const [questionData, setQuestionData] = useState(null);     // 질문
+    const [optionState, setOptionState] = useState(null);       // 옵션
+    const [clickEvent, setClickEvent] = useState({              
         subjectClick : null,
         subjectGroupAddClick : null,
     });
-
+    //참가 희망 학생 받기
     const waitStd = [
-        {StdId : 1, StdName : "Bob", state : "wait"},
-        {StdId : 2, StdName : "Com", state : "wait"},
-        {StdId : 3, StdName : "Tall", state : "Inner"},
-        {StdId : 4, StdName : "Tea", state : "wait"},
-        {StdId : 5, StdName : "Mini", state : "wait"},
-        {StdId : 6, StdName : "Rost", state : "Inner"},
-        {StdId : 7, StdName : "Call", state : "wait"},
+        {StdId : 1, StdName : "test1", state : "wait"},
+        {StdId : 2, StdName : "test2", state : "wait"},
+        {StdId : 3, StdName : "name", state : "Inner"},
+        {StdId : 4, StdName : "baba", state : "wait"},
+        {StdId : 5, StdName : "bobo", state : "wait"},
+        {StdId : 6, StdName : "sion", state : "Inner"},
+        {StdId : 7, StdName : "SinZuKu", state : "wait"},
     ]
+
+    //자료실 데이터
     const exFileList = [
         {date : "2020.3.1", name : "Java_1"},
         {date : "2020.3.6", name : "Java_2"},
@@ -195,7 +197,7 @@ export default function Home(props){
             const queClickEvent = (argId) =>{
                 document.getElementById(argId)
             }
-            const color = list.state ? "2px solid blue" : "2px solid gray";
+            const color = list.state ? "rgba(53,108, 213) solid 2px" : "2px solid gray";
             return (
                 <div className="Home_Option_Content_Question_List"
                 style={{border : color,}}>
@@ -228,7 +230,7 @@ export default function Home(props){
                         width:"90%",
                         margin:"0 auto",
                         marginTop : "10px",
-                        border : "2px solid blue",
+                        border : "rgba(53,108, 213) solid 2px",
                     }}>
                         {list.name}
                         <div style={{float:'right', display:"block"}}>
@@ -274,7 +276,7 @@ export default function Home(props){
             if(list.state == "wait"){
                 return (
                     <div className="Home_Content_Option_StdList_Permit"> 
-                        {list.StdName} {list.StdId}  
+                        {list.StdName}  
                         <button className="Home_Content_Option_StdList_Permit_Btn"> O </button>
                         <button className="Home_Content_Option_StdList_Permit_Btn"> X </button>
                     </div>
