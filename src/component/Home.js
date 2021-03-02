@@ -18,7 +18,7 @@ export default function Home(props){
         subjectClick : null,
         subjectGroupAddClick : null,
     });
-    //참가 희망 학생 받기
+    //참가 희망 학생 받기 // 리스트 쪽 엑시오스 수정하고
     const waitStd = [
         {StdId : 1, StdName : "test1", state : "wait"},
         {StdId : 2, StdName : "test2", state : "wait"},
@@ -45,12 +45,12 @@ export default function Home(props){
 
     // axios Response URL Valiable
     const serverUrl = {
-        server : "http://54.146.88.72:3000/",
-        getSubject : "http://54.146.88.72:3000/list/subject/",      // userId
-        InfoChange : "http://54.146.88.72:3000/main/modifyuser/",   // userId , data => name, mail, phone
-        createsub  : "http://54.146.88.72:3000/main/createsub/",    // userId,  data => suj_name 
-        StdPermit : "http://54.146.88.72:3000/",                    // 학생 가입 대기중인 List 가져오기
-        fileUpload : "http://54.146.88.72:3000/file/add/:userId/:fileType/:subjectId/",
+        server      : "http://54.146.88.72:3000/",
+        getSubject  : "http://54.146.88.72:3000/list/subject/",      // userId
+        InfoChange  : "http://54.146.88.72:3000/main/modifyuser/",   // userId , data => name, mail, phone
+        createsub   : "http://54.146.88.72:3000/main/createsub/",    // userId,  data => sub_name 
+        StdPermit   : "http://54.146.88.72:3000/",                    // 학생 가입 대기중인 List 가져오기
+        fileUpload  : "http://54.146.88.72:3000/file/add/",          // :userId/:fileType/:subjectId/
     }
 
     useEffect(async ()=>{
@@ -254,6 +254,24 @@ export default function Home(props){
             </div>
         ))
     }
+    const GroupAdd_axios = async () => {
+        const element = document.getElementById('subjectName');
+        console.log(element.value);
+        const url = serverUrl.createsub + userData.id;
+
+        await axios.post(url, {data : { subName : element.value }})
+        .then((res) => {
+            //과목 추가 응답 왔을 시
+            //리랜더 시킬 수 있는 스테이트 넣기
+            console.log(res);
+            console.log(subjectData)
+            getSubjectList()
+            // setSubjectData(res.data);
+            //이러면 subjectData.map is not a function 이렇게 뜸
+            
+        })
+        setSubjectOption(null);
+    }
 
     const GroupAdd_View = () => {
         /*
@@ -265,7 +283,7 @@ export default function Home(props){
                 <div className="Home_Content_GroupAdd_Main">
                     <p> 그룹명을 추가해 주세요. </p> <br/>
                     <input className="Home_Content_GroupAdd_Input" id="subjectName" name="subjectName"/>
-                    <button className="Home_Content_GroupAdd_Btn" > 과목추가 </button>
+                    <button className="Home_Content_GroupAdd_Btn" onClick={GroupAdd_axios} > 과목추가 </button>
                 </div>
             </div>
         ));

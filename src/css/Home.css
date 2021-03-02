@@ -1,15 +1,17 @@
 
 .Home_Main{
-    width: 800px;
-    height: 700px;
+    width: 98%;
+    height: 750px;
     margin : 0 auto;
-    border : rgba(53,108, 213) solid 5px;
+    margin-top: 16px;
+    /* border : rgba(53,108, 213) solid 5px; */
 }
 .Home_Logo_Frame_Body{
     display: block;
     width: 100%;
-    margin-top : 20px;
-    height: 150px;
+    border: silver solid 3px;
+    box-shadow: seashell 5px 10px;
+    height: 20%;
 }
 
 .Home_Logo_Img{
