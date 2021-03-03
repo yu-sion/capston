@@ -14,15 +14,16 @@ export default function Options(props) {
     const setOptionState = props.setOptionState;                      // 오른쪽 옵션 상태 set
     const optionState = props.optionState;                            // 오른쪽 옵션 상태 get
     const clickSub = props.clickSub;                                  // 누른 과목 번호
-    const [subDataLists, setSubDataLists] = useState(null);
-
+    const [subDataLists, setSubDataLists] = useState(null);           // 유저 목록 저장 
+    console.log(urlObj);
     // option 값 확인 후 맞는 함수 띄우기
+
     if(optionState == "userList"){
-        return <GroupUser_List  
-                    userData={userData} 
-                    urlObj={urlObj} 
-                    setOptionState={setOptionState}
+        console.log("userList");
+        return <GroupUser_List
                     clickSub={clickSub}
+                    setSubDataLists={setSubDataLists}
+                    subDataLists={subDataLists}
                     />
     }else if(optionState == "add"){
         return <GroupAdd_View 
@@ -40,6 +41,8 @@ export default function Options(props) {
         return <></>
     }
 }
+
+//---------------------------------------------------------------- 과목 추가------------------------------------------------------------------
     // 과목 추가 함수
 async function Add({userData, urlObj, setOptionState}) {
     const element = document.getElementById('subjectName');
@@ -47,7 +50,6 @@ async function Add({userData, urlObj, setOptionState}) {
     await axios.post(url, {data : { subName : element.value }})
     .then((res) => {
     // 리랜더 시킬 수 있는 스테이트 넣기
-        console.log(res);
     })
     setOptionState(null);
 }
@@ -66,32 +68,33 @@ function GroupAdd_View({userData, urlObj, setOptionState}) {
     )
 }
 
+//---------------------------------------------------------------- 해당 과목 유저 목록------------------------------------------------------------
 // 해당 과목 유저 데이터 들고오기
-async function GroupUser_List({urlObj, setOptionState, clickSub, setSubDataLists, subDataLists}) {
-    const url = urlObj.StdPermit + clickSub;
-    var data = null;
-    await axios.post(url)
+async function GroupUser_List(clickSub, setSubDataLists, subDataLists) {
+    console.log("Group");
+    await axios.post(`http://54.146.88.72:3000/list/student/${clickSub}`)
     .then((res) => {
+        console.log(res);
         // 학생 목록 저장 스테이트 추가
-        // data = setUserLists(res.data.result);
-        // setSubDataLists(res.data.result);
+        setUserLists(res.data.result, clickSub, subDataLists);
     })
-    return data;
+    return <></>;
 }
 
 // 해당 과목 유저 데이터 띄우기
-const setUserLists = ({ setOptionState, clickSub, subDataLists}) => {
-    const Lists = setOptionState || subDataLists;
+const setUserLists = ({ data, clickSub, subDataLists}) => {
+    console.log("map_str");
+    const Lists = data || subDataLists;
     const list = typeof Lists == "object" ? Lists.map( item => {
         console.log(item);
 
         return (
-        <tr className="Sub_Lists" style={{
+        <tr style={{
             border : "black solid 3px",
         }}> {item.userName} </tr>
         )}) : null;
         return (
-        <table className="Sub_table">
+        <table>
             <tbody>
                 {list}
             </tbody>

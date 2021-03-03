@@ -23,10 +23,10 @@ export default function Subject(props) {
         console.log("viewSta");
     },[viewSta])
 
-    useEffect(async () =>{
-        console.log("option");
-        await getSubLists();
-    },[optionState])
+    // useEffect(async () =>{
+    //     console.log("option");
+    //     await getSubLists();
+    // },[optionState])
 
 
 
