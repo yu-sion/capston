@@ -9,7 +9,7 @@ function User_Info({setUserData, userData}) {
     const handleData = (e)=>{
         e.preventDefault()
         const data = {
-            name  : e.target.name.value,
+            userName  : e.target.name.value,
             id    : e.target.usrId.value,
             mail  : e.target.email.value,
             phone : e.target.phoneNumber.value,
@@ -18,7 +18,7 @@ function User_Info({setUserData, userData}) {
         axios.post('http://54.146.88.72:3000/index/addinfo' , {data} )
             .then((res) => {
                 console.log(res);
-                localStorage.setItem('data_user', JSON.stringify(res));
+                localStorage.setItem('data_user', JSON.stringify(data));
         })
         history.push('home')
     }
@@ -52,9 +52,9 @@ function User_Info({setUserData, userData}) {
                             <tr>
                                 <td> 직업 </td>
                                 <td> <div>
-                                    <input type="radio" name="job" id="teacher" value="교수님"/>
+                                    <input type="radio" name="job" id="teacher" value="professor"/>
                                     <label htmlFor="teacher" > 교수님 </label>
-                                    <input type="radio" name="job" id="student" value="학생"/>
+                                    <input type="radio" name="job" id="student" value="student"/>
                                     <label htmlFor="student" > 학생 </label>
                                 </div> </td>
                             </tr>
