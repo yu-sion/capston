@@ -30,7 +30,8 @@ export default function Login() {
                     // Data is true
                     alert('가입된 이용자 입니다.')
                     localStorage.setItem('user_id', JSON.stringify(res.data.result[0].id));
-                    localStorage.setItem('data_user', JSON.stringify(res.data.result[0]));                    
+                    localStorage.setItem('data_user', JSON.stringify(res.data.result[0]));
+                    console.log(res.data.result[0]);
                     history.push('Home');
                 }
             })   //axios 기능을 통한 post 사용및 name 값 전달.

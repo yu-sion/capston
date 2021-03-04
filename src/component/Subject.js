@@ -1,99 +1,111 @@
 import React,{ useEffect, useState } from "react";
 import axios from "axios";
 import "../css/Subject.css";
-import Options from "./Option";
+import Option from "./Option";
 
-
-export default function Subject(props) {
-    const userData  = props.userData;
-    const urlObj    = props.serverUrl; 
-    const [subjectData, setSubjectData] = useState(null);       // 과목 데이터
-    const [viewSta, setViewSta] = useState(null);
-    const [optionState, setOptionState] = useState(null);       // 옵션
-    const [clickSub, setClickSub] = useState(null);             // 클릭 된 과목 기억
-
-    // 처음 한 번
-    useEffect(async ()=>{
-        console.log("didmount");
-        await getSubLists();
-    },[])
-
-    // 뷰가 바뀔 때
-    useEffect(() =>{   
-        console.log("viewSta");
-    },[viewSta])
-
-    // useEffect(async () =>{
-    //     console.log("option");
-    //     await getSubLists();
-    // },[optionState])
-
-
-
-    // 과목 아이디 및 상태값 변경
-    const subId = (id) => {
-        setClickSub(id)
-        setOptionState("userList")
+export default class Subject extends React.Component{
+    constructor(props){
+        super(props);
+        this.urlObj = props.serverUrl;
+        const userData = props.userData;
+        this.state = {
+            userData : userData,
+            subjectDatas : null,
+            subjectData : null,
+            option : null,
+            clickSubject : null,
+        }
+    }
+//-------------------------------- 과목 목록 가져오는 통신 
+    getSubject = async (args) => {
+        const url = this.urlObj.getSubject + this.state.userData.id;
+        await axios.post(url).then( res => {
+            this.setState( !args ? 
+                { subjectDatas : res.data.result } : 
+                { subjectDatas : res.data.result,
+                    option : null});
+        }).catch( err => console.error(err));
     }
 
-    // 과목 목록들 저장
-    const getSubLists = async () =>{
-        const url = urlObj.getSubject + userData.id;
-        let data = null;
-        await axios.post(url)
-        .then((res) => {
-            setSubjectData(res.data.result);
-            data = res.data.result;
-        });
-        setSubLists(data);
-    }
-
-    // 목록 띄우기
-    const setSubLists = (argData) => {
-        const Lists = argData || subjectData;
-        const list = typeof Lists == "object" ? Lists.map( item => {
-            const color = item.classOnline ? "yellow" : "rgba(204,204,204,0.8)";
+//---------------------------------과목 목록 띄우는 함수
+    prtSubjectList = () => {
+        const lists =  this.state.subjectDatas != null ? this.state.subjectDatas.map( list => {
+            const color = list.classOnline ? "yellow" : "rgba(204,204,204,0.8)";
             return (
-            <tr className="Sub_Lists" style={{
-                backgroundColor : color,
-                border : "black solid 3px",
-            }} onClick={(e) => subId(item.id)}>
-                {item.className}
-            </tr>
+                <div className="Sub_Lists" style={{
+                    backgroundColor : color,
+                    border : "black solid 3px",
+                }}
+                onClick={()=> this.Home_Content_view_controller(list.id)}>
+                    {list.className}
+                    {/* <button> 수업 시작 </button>
+                    <button> 자료실 </button>
+                    <button> 질문 </button> */}
+                </div>
             )
         }) : null;
-        setViewSta(
-            <table className="Sub_table">
-                <tbody>
-                    {list}
-                </tbody>
-            </table>
+
+        return (
+            <div>
+                {lists}
+            </div>
         )
     }
 
-    // 오른쪽 옵션 뷰 상태 값 변
-    return (
-        <div>
+    //----------------------------------------------------------오른 쪽 뷰 제어 함수---------------------------------
+    Home_Content_view_controller = (id) => {
+        if(this.state.option != "prtStd") {
+            this.setState({clickSubject : id , option : "stdList"})
+        }else{
+            this.setState({option : "null"})
+        }
+    }
+
+    componentDidMount(){
+        this.getSubject();
+    }
+
+
+    componentDidUpdate(prevProps, prevState){
+        if(this.state.subjectDatas != prevState.subjectDatas){
+            console.log(this.state.subjectDatas);
+        }
+        if(this.state.clickSubject != prevState.clickSubject){
+            console.log(this.state.clickSubject);
+        }
+    }
+
+    setOptionState = (arg ) => {
+        this.setState({
+            option : arg
+        })
+    }
+
+    render(){
+        return (
+            <div>
             <div className="Home_Content_SubjectList_Body" id="subjectList_Body">
                 <div className="Home_Content_Add">
                     <div style={{width:'100%', height:'100%'}}>
-                        <button style={{marginTop:"3px",marginRight:"5px", float:"right", }} onClick={() => setOptionState("add")}> 과목추가 </button>
+                        <button style={{marginTop:"3px",marginRight:"5px", float:"right", }} onClick={()=>{this.setState({option:"add"})}}> 과목추가 </button>
                     </div>
                     <div className="Home_Content_Subject_View">
-                        {viewSta}
+                        <this.prtSubjectList />
                     </div>
                 </div>
             </div>
             <div className="Home_Content_SubList_View_Body">
-                <Options 
-                    userData ={userData} 
-                    urlObj={urlObj} 
-                    subjectData={subjectData} 
-                    optionState={optionState} 
-                    setOptionState={setOptionState} 
-                    clickSub={clickSub}
+                <Option
+                    userData ={this.state.userData} 
+                    urlObj={this.urlObj} 
+                    subjectData={this.state.subjectData} 
+                    optionState={this.state.option} 
+                    clickSub={this.state.clickSubject}
+                    getSubject={this.getSubject}
+                    setOptionState={this.setOptionState}
                 />
             </div>
         </div>
-    )
+        )
+    }
 }
