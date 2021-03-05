@@ -31,16 +31,24 @@ export default class Subject extends React.Component{
     prtSubjectList = () => {
         const lists =  this.state.subjectDatas != null ? this.state.subjectDatas.map( list => {
             const color = list.classOnline ? "yellow" : "rgba(204,204,204,0.8)";
+
+            const view = (this.state.clickSubject == list.id) ? (
+                <>
+                <button onClick={() => { this.fileInfo(list.id)}} > 자료실 </button>
+                <button> 수업 시작 </button> 
+                <button> 질문 </button>
+                </>
+            )
+            : null;
             return (
                 <div className="Sub_Lists" style={{
                     backgroundColor : color,
                     border : "black solid 3px",
-                }}
-                onClick={()=> this.Home_Content_view_controller(list.id)}>
+                }}>
+                    <input type="checkbox" onClick={()=> this.Home_Content_view_controller(list.id)}></input>
                     {list.className}
-                    {/* <button> 수업 시작 </button>
-                    <button> 자료실 </button>
-                    <button> 질문 </button> */}
+                    {view}
+                    
                 </div>
             )
         }) : null;
@@ -50,6 +58,13 @@ export default class Subject extends React.Component{
                 {lists}
             </div>
         )
+    }
+
+    fileInfo = (id) => {
+        this.setState({
+            option : "file",
+            clickSub : id,
+        })
     }
 
     //----------------------------------------------------------오른 쪽 뷰 제어 함수---------------------------------
@@ -75,7 +90,7 @@ export default class Subject extends React.Component{
         }
     }
 
-    setOptionState = (arg ) => {
+    setOptionState = (arg) => {
         this.setState({
             option : arg
         })

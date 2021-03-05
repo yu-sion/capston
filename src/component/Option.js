@@ -21,6 +21,8 @@ export default class Option extends React.Component{
             subject : subjectData,
             stdList : null,
             userInfo : null,
+            fileView : null,
+            selectFile : null,
         }
     }
 
@@ -131,7 +133,45 @@ export default class Option extends React.Component{
             </div>
         )
     }
+    //----------------------------------------------------------파일 업로드 함수--------------------------------------------------------
+    fileUpload = async(fileType, classNum, userId) => {
+        const fileIdUrl = this.urlObj.fileId + userId + "/" + fileType + "/" + classNum;
+        const data = new FormData();
+        const file = document.getElementsByClassName("file");
+        data.append("file", file[0].files[0], file[0].files[0].name);
+        console.log(file[0].files[0].name);
 
+        const req = new XMLHttpRequest();
+
+        await axios.post(fileIdUrl, {data : {fileName : file[0].files[0].name }})
+        .then((res) =>{
+            console.log(res);
+
+            const fileUploadUrl = this.urlObj.fileUpload + res.data.fileId;
+            console.log(fileUploadUrl);
+            req.open('POST', fileUploadUrl, false);
+            req.send(data);
+            console.log("ok")
+        })
+        
+    }
+
+
+
+    //----------------------------------------------------------파일 목록 함수 view-----------------------------------------------------
+    fileView = () => {
+        console.log(this.props);
+            return ( 
+                <div className="Home_Content_Option_Frame"> 
+                    <div> <h3> 자료실 </h3> </div>
+                    <div className="Home_Content_GroupAdd_Main"  > 
+                        <input type="file" multiple className="file"/>
+                        <button className="Home_Content_GroupAdd_Btn"
+                            onClick = {() => {this.fileUpload(1, this.props.clickSub, this.state.userData.id)}}> 업로드 </button>
+                    </div>
+                </div>
+            )
+    }
     //----------------------------------------------------------그룹 추가 view----------------------------------------------------------
     prtGroup_Add = () => {
         // userData, urlObj, setOptionState
@@ -162,10 +202,12 @@ export default class Option extends React.Component{
             </div>
             )
         }
+        if(this.props.optionState == "file"){
+            return this.fileView();
+            
+        }
         return (<>
         </>
         )
     }
 }
-
-//---------------------------------------------------------------- 해당 과목 유저 목록------------------------------------------------------------

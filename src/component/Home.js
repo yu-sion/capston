@@ -15,12 +15,14 @@ export default class Home extends React.Component{
         console.log(this.state.userData);
         this.serverUrl = {
             server      : "http://54.146.88.72:3000/",
-            getSubject  : "http://54.146.88.72:3000/list/subject/",      // userId
-            InfoChange  : "http://54.146.88.72:3000/main/modifyuser/",   // userId , data => name, mail, phone
-            createsub   : "http://54.146.88.72:3000/main/createsub/",    // userId,  data => sub_name 
-            StdPermit   : "http://54.146.88.72:3000/list/student/",      // 학생 가입 대기중인 List 가져오기 :classId
-            fileUpload  : "http://54.146.88.72:3000/file/add/",          // :userId/:fileType/:subjectId/    
-            userAccept  : "http://54.146.88.72:3000/main/accept/"        // 학생 가입 수락 / 거절 userId/:classId/:accept
+            InfoChange  : "http://54.146.88.72:3000/main/modifyuser/",                 // 정보 수정  => userId , data => name, mail, phone
+            getSubject  : "http://54.146.88.72:3000/list/subject/",                    // 과목 목록 => userId
+            createsub   : "http://54.146.88.72:3000/main/createsub/",                  // 과목 추가  => userId,  data => sub_name 
+            StdPermit   : "http://54.146.88.72:3000/list/student/",                    // 학생 가입 대기중인 List 가져오기 => classId
+            userAccept  : "http://54.146.88.72:3000/main/accept/",                     // 학생 가입 수락 / 거절  =>userId/:classId/:accept
+            fileId      : "http://54.146.88.72:3000/file/add/",                        // 파일 추가용 Id 받기 => :userId/:fileType/:subjectId/    
+            fileUpload  : "http://54.146.88.72:3000/file/uploadteachingmeterial/",     // 파일 ID를 fileId axios에서 받아와 업로드
+            fileList    : "http://54.146.88.72:3000/list/teachingmeterial/",           // 파일 리스트 classId
         }
     }
 

@@ -27,7 +27,7 @@ function User_Info({setUserData, userData}) {
     },[userData])
 
 
-      return (
+    return (
     <div className="Main_Body">
             <div className="Main_Form">
                 <div className="Main_Form_Value">
