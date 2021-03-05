@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import { Redirect, useHistory } from "react-router-dom";
+import React from "react";
 import axios from "axios";
 import Subject from "./Subject";
 import "../css/Home.css";
@@ -12,17 +11,23 @@ export default class Home extends React.Component{
         this.state = {
             userData : usrData,  // userMail, userName, userNum, userPhone userType
         }
+        const url = "http://54.146.88.72:3000/";
         console.log(this.state.userData);
         this.serverUrl = {
-            server      : "http://54.146.88.72:3000/",
-            InfoChange  : "http://54.146.88.72:3000/main/modifyuser/",                 // 정보 수정  => userId , data => name, mail, phone
-            getSubject  : "http://54.146.88.72:3000/list/subject/",                    // 과목 목록 => userId
-            createsub   : "http://54.146.88.72:3000/main/createsub/",                  // 과목 추가  => userId,  data => sub_name 
-            StdPermit   : "http://54.146.88.72:3000/list/student/",                    // 학생 가입 대기중인 List 가져오기 => classId
-            userAccept  : "http://54.146.88.72:3000/main/accept/",                     // 학생 가입 수락 / 거절  =>userId/:classId/:accept
-            fileId      : "http://54.146.88.72:3000/file/add/",                        // 파일 추가용 Id 받기 => :userId/:fileType/:subjectId/    
-            fileUpload  : "http://54.146.88.72:3000/file/uploadteachingmeterial/",     // 파일 ID를 fileId axios에서 받아와 업로드
-            fileList    : "http://54.146.88.72:3000/list/teachingmeterial/",           // 파일 리스트 classId
+            server      :  url,
+            InfoChange  :  url + "main/modifyuser/",                  // 정보 수정  => userId , data => name, mail, phone
+            getSubject  :  url + "list/subject/",                     // 과목 목록 => userId
+            createsub   :  url + "main/createsub/",                   // 과목 추가  => userId,  data => sub_name 
+            StdPermit   :  url + "list/student/",                     // 학생 가입 대기중인 List 가져오기 => classId
+            userAccept  :  url + "main/accept/",                      // 학생 가입 수락 / 거절  =>userId/:classId/:accept
+            fileId      :  url + "file/add/",                         // 파일 추가용 Id 받기 => :userId/:fileType/:subjectId/    
+            fileUpload  :  url + "uploadteachingmeterial/",           // 파일 ID를 fileId axios에서 받아와 업로드
+            fileList    :  url + "list/teachingmeterial/",            // 파일 리스트  => classId
+            fileDown    :  url + "file/download/",                    // 파일 다운 => :fileName
+            fileDel     :  url + "delete/teachmeterial/",             // 파일 삭제 => :fileId
+            qnaList     :  url + "list/question/",                    // 과목 질문 리스트 => :classId
+            qnaDel      :  url + "delete/allquestion/",               // 과목 질문 전체 삭제 => :classId
+            qnaOk       :  url + "main/readquestion/",                // 과목 질문 읽음 표시 => :questionId
         }
     }
 

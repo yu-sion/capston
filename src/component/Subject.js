@@ -1,4 +1,4 @@
-import React,{ useEffect, useState } from "react";
+import React from "react";
 import axios from "axios";
 import "../css/Subject.css";
 import Option from "./Option";
@@ -32,11 +32,11 @@ export default class Subject extends React.Component{
         const lists =  this.state.subjectDatas != null ? this.state.subjectDatas.map( list => {
             const color = list.classOnline ? "yellow" : "rgba(204,204,204,0.8)";
 
-            const view = (this.state.clickSubject == list.id) ? (
+            const view = (this.state.clickSubject === list.id) ? (
                 <>
                 <button onClick={() => { this.fileInfo(list.id)}} > 자료실 </button>
-                <button> 수업 시작 </button> 
-                <button> 질문 </button>
+                <button > 수업 시작 </button> 
+                <button onClick={() => { this.qnaInfo(list.id)}} > 질문 </button>
                 </>
             )
             : null;
@@ -60,6 +60,15 @@ export default class Subject extends React.Component{
         )
     }
 
+    //----------------------------------------------------------------질문---------------------------------------------------------------------
+    qnaInfo = (id) => {
+        this.setState({
+            option : "qna",
+            clickSub : id,
+        })
+    }
+
+    //---------------------------------------------------------------자료실--------------------------------------------------------------------
     fileInfo = (id) => {
         this.setState({
             option : "file",
@@ -69,7 +78,7 @@ export default class Subject extends React.Component{
 
     //----------------------------------------------------------오른 쪽 뷰 제어 함수---------------------------------
     Home_Content_view_controller = (id) => {
-        if(this.state.option != "prtStd") {
+        if(this.state.option !== "prtStd") {
             this.setState({clickSubject : id , option : "stdList"})
         }else{
             this.setState({option : "null"})
@@ -82,10 +91,10 @@ export default class Subject extends React.Component{
 
 
     componentDidUpdate(prevProps, prevState){
-        if(this.state.subjectDatas != prevState.subjectDatas){
+        if(this.state.subjectDatas !== prevState.subjectDatas){
             console.log(this.state.subjectDatas);
         }
-        if(this.state.clickSubject != prevState.clickSubject){
+        if(this.state.clickSubject !== prevState.clickSubject){
             console.log(this.state.clickSubject);
         }
     }

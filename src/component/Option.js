@@ -1,5 +1,6 @@
 import React from "react";
 import axios from "axios";
+import { saveAs } from 'file-saver';
 /*
 
     자료실, 질문, 학생 목록, 영상
@@ -17,12 +18,13 @@ export default class Option extends React.Component{
         this.setOptionState = props.setOptionState;
 
         this.state = {
-            userData : usrData,
+            userData : usrData,   
             subject : subjectData,
-            stdList : null,
-            userInfo : null,
-            fileView : null,
+            stdList : null,         // 과목 리스트
+            userInfo : null,        // 정보 수정
+            fileList : null,        // fileList Datas
             selectFile : null,
+            qnaList  : null,
         }
     }
 
@@ -49,10 +51,17 @@ export default class Option extends React.Component{
     }
 
     componentDidUpdate(prevProps, prevState){
-        if(this.state.stdList != prevState.stdList){
+        if(this.state.stdList !== prevState.stdList){
             console.log(this.state.stdList);
             this.setOptionState("prtStd");
         }
+        if(this.state.fileList !== prevState.fileList){
+            this.setOptionState("fileView");
+        }
+        if(this.state.qnaList !== prevState.qnaList){
+            this.setOptionState("qnaView");
+        }
+        console.log(this.state.fileList);
         
     }
 
@@ -86,7 +95,6 @@ export default class Option extends React.Component{
             this.subjectStdList();
         }).catch(err => console.error(err));
     }
-
 
 //---------------------------------------subjectStdList에서 받아온 정보 map으로 띄우기---------------------------------------
     prtSubjectStdList = () => {
@@ -133,6 +141,7 @@ export default class Option extends React.Component{
             </div>
         )
     }
+
     //----------------------------------------------------------파일 업로드 함수--------------------------------------------------------
     fileUpload = async(fileType, classNum, userId) => {
         const fileIdUrl = this.urlObj.fileId + userId + "/" + fileType + "/" + classNum;
@@ -146,32 +155,95 @@ export default class Option extends React.Component{
         await axios.post(fileIdUrl, {data : {fileName : file[0].files[0].name }})
         .then((res) =>{
             console.log(res);
-
             const fileUploadUrl = this.urlObj.fileUpload + res.data.fileId;
             console.log(fileUploadUrl);
             req.open('POST', fileUploadUrl, false);
             req.send(data);
-            console.log("ok")
-        })
-        
+            console.log("OK_OK_OK");
+            this.getFileList();
+        })        
     }
 
+    //----------------------------------------------------------파일 다운 함수-------------------------------------------------
+    fileDown = (name) => {
+        const fileDownUrl =this.urlObj.fileDown + name;
+        console.log(fileDownUrl);
+        window.open(fileDownUrl);
+    }
 
+    //---------------------------------------------------------파일 삭제 함수--------------------------------------------------
+    fileDel = (id) =>{
+        const fileDel = this.urlObj.fileDel + id;
+        axios.post(fileDel)
+        .then((res) => {
+            console.log(res);
+            this.getFileList()
+        })
+    }
 
-    //----------------------------------------------------------파일 목록 함수 view-----------------------------------------------------
+    //----------------------------------------------------------자료실 view-----------------------------------------------------
     fileView = () => {
+        console.log(this.state.fileList);
         console.log(this.props);
+
             return ( 
                 <div className="Home_Content_Option_Frame"> 
                     <div> <h3> 자료실 </h3> </div>
                     <div className="Home_Content_GroupAdd_Main"  > 
                         <input type="file" multiple className="file"/>
+                        <table>
+                            <tbody>
+                                <this.fileListViewMap />
+                            </tbody>
+                        </table>
                         <button className="Home_Content_GroupAdd_Btn"
                             onClick = {() => {this.fileUpload(1, this.props.clickSub, this.state.userData.id)}}> 업로드 </button>
                     </div>
                 </div>
             )
     }
+
+    //----------------------------------------------------------파일 목록 함수------------------------------------------------------------
+    getFileList = async () => {
+        console.log("getFileList");
+        const fileListUrl = this.urlObj.fileList + this.props.clickSub;
+        await axios.post(fileListUrl)
+        .then((res) => {
+            console.log(res.data.result);
+            this.setState({
+                fileList : res.data.result
+            });
+            console.log(this.state.fileList); // null
+        })
+        
+    }
+    
+    //------------------------------------------------------fileListView => map --------------------------------------------------------
+    fileListViewMap = () =>{
+        const lists = this.state.fileList != null ? this.state.fileList.map( ( list ) => {
+                return (
+                    <div style={{
+                        border : "black solid 1px",
+                        margin : "3px",
+                        fontSize : "20px",
+                    }}> 
+                        <div>
+                            {list.fileName}
+                        <button style={{marginLeft:"5px", float : "right",}} onClick={() => {this.fileDel(list.id)}}>삭제</button>
+                        <button style={{marginLeft:"5px", float : "right",}} onClick={() => {this.fileDown(list.fileName)}}>다운</button>
+                        </div>
+                    </div>
+                )
+        }) : null;
+        return (
+            <div style={{margin : "10px"}}> 
+                <div>
+                    {lists}
+                </div>
+            </div>
+        )
+    }
+
     //----------------------------------------------------------그룹 추가 view----------------------------------------------------------
     prtGroup_Add = () => {
         // userData, urlObj, setOptionState
@@ -187,14 +259,97 @@ export default class Option extends React.Component{
         )
     }
 
+    //-------------------------------------------------------과목 질문 전체 삭제--------------------------------------------------------
+    qnaDel = async(id) => {
+        const qnaDelUrl = this.urlObj.qnaDel + id;
+        await axios.post(qnaDelUrl)
+        .then((res) => {
+            console.log(res);
+            this.qnaListAxios();
+        })
+    }
+    //-------------------------------------------------------과목 질문 리스트 axios-----------------------------------------------------
+    qnaListAxios = async () => {
+        console.log("hello");
+        const qnaUrl = this.urlObj.qnaList + this.props.clickSub;
+        await axios.post(qnaUrl).then( res => {
+            console.log(res);
+            this.setState({
+                qnaList : res.data.result
+            })
+        }).catch(err => console.error(err));
+    }
+    
+    //------------------------------------------------------과목 질문 View-------------------------------------------------
+    qnaView = () => {
+        console.log(this.state.qnaList);
+        console.log(this.props);
+
+            return ( 
+                <div className="Home_Content_Option_Frame"> 
+                    <div> 
+                        <h3> 질문 </h3>
+                    </div>
+                    <div className="Home_Content_GroupAdd_Main"  > 
+                        <table>
+                            <tbody>
+                                <this.qnaListViewMap />
+                            </tbody>
+                        </table>
+                        <button onClick={() => {this.qnaDel(this.props.clickSub)}}>삭제</button>
+                    </div>
+                </div>
+            )
+    }
+
+    //----------------------------------------------------과목 질문 리스트 map----------------------------------------------------------
+    qnaListViewMap = () =>{
+        const lists = this.state.qnaList != null ? this.state.qnaList.map( ( list ) => {
+            const color = ( list.check === 1 ) ? "gray" : "red"; 
+                return (
+                    <div style={{
+                        border : "black solid 1px",
+                        margin : "3px",
+                        fontSize : "20px",
+                    }}> 
+                        <div style={{color : color}} onClick={() => this.qnaOk(list.id)}>
+                            {list.fileName}
+                        </div>
+                        <div style={{display:'none'}}>
+                            {list.content}
+                        </div>
+                    </div>
+                )
+        }) : null;
+        return (
+            <div style={{margin : "10px"}}> 
+                <div>
+                    {lists}
+                </div>
+            </div>
+        )
+    }
+
+    //------------------------------------------------질문 읽음 표시------------------------------------------
+    qnaOk = (id) =>{
+        const qnaOkUrl = this.urlObj.qnaOk + id;
+        axios.post(qnaOkUrl)
+        .then((res) =>{
+            console.log(res);
+            this.qnaListAxios();
+        })
+    }
     render(){
-        if(this.props.optionState == "add"){
+        // 과목 추가
+        if(this.props.optionState === "add"){
             return this.prtGroup_Add();
         }
-        if(this.props.optionState == "stdList"){
+        // 과목 리스트
+        if(this.props.optionState === "stdList"){
             this.subjectStdList();
         }
-        if(this.props.optionState == "prtStd"){
+        // 선택 과목 학생 리스트
+        if(this.props.optionState === "prtStd"){
             return (
             <div>
                 <this.prtSubjectStdList />
@@ -202,9 +357,21 @@ export default class Option extends React.Component{
             </div>
             )
         }
-        if(this.props.optionState == "file"){
+        // 선택 과목 자료실 get
+        if(this.props.optionState === "file"){
+            this.getFileList();
+            return (<div></div>);
+        }
+        // 선택 과목 자료실 띄우기
+        if(this.props.optionState === "fileView"){
             return this.fileView();
-            
+        }
+        if(this.props.optionState === "qna"){
+            this.qnaListAxios();
+            return (<div></div>)
+        }
+        if(this.props.optionState === "qnaView"){
+            return this.qnaView();
         }
         return (<>
         </>
