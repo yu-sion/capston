@@ -319,9 +319,10 @@ export default class Option extends React.Component{
 
             console.log(qnaIdUrl);
             const qnaPlusUrl = this.urlObj.qnaPlus;
-            const fileTitle = "test";
-            const fileContent = "2";
+            const fileTitle = document.getElementById("title").value;
+            const fileContent = document.getElementById("content").value;
             
+            console.log(fileTitle, " : " ,fileContent)
             const data = {
                 questionTitle : fileTitle,
                 questionContent : fileContent,
@@ -336,8 +337,8 @@ export default class Option extends React.Component{
                 console.log(qnaPlusUrl+res.data.fileId);
                 console.log(data);
                 axios.post(qnaPlusUrl+res.data.fileId, {data})
-                .then((res) => {
-                    this.qnaListAxios();
+                .then(async(res) => {
+                    await this.qnaListAxios();
                     console.log("end : ", res);
                 }).catch((err) => {
                     console.log("err : ", err);
@@ -347,7 +348,7 @@ export default class Option extends React.Component{
     }
     //------------------------------------------------------과목 질문 추가(학생)-------------------------------------------
     qnaPlus = () => {
-        this.qnaUpload();
+        // this.qnaUpload();
         console.log("title");
         return(
                 <form>
@@ -368,13 +369,15 @@ export default class Option extends React.Component{
                 </form>
         )
 
+
     }
     
     //------------------------------------------------------과목 질문 View-------------------------------------------------
     qnaView = () => {
         console.log(this.state.qnaList);
         console.log(this.props);
-        const type = (this.state.userData.userType === "student") ? <button onClick={this.qnaPlus}>질문하기</button> : <button onClick={() => {this.qnaDel()}}>삭제</button>;
+        //뭐라고? 잠온다고? 아니 이거 먼저 해야한다니까? 그렇게 둥글둥글하게 설명ㅎ봤자 지금 ㄴ
+        const type = (this.state.userData.userType === "student") ? <button onClick={() => {this.props.setOptionState("qnaPlus")}}>질문하기</button> : <button onClick={() => {this.qnaDel()}}>삭제</button>;
         return ( 
                 <div className="Home_Content_Option_Frame"> 
                     <div> 
@@ -424,11 +427,11 @@ export default class Option extends React.Component{
                         margin : "3px",
                         fontSize : "20px",
                     }}> 
-                        <div style={{color : color, width : "300px",}} onClick={() => this.qnaOk(list.id)}>
+                        <div style={{color : color, width : "300px",}} onClick={(e) => this.qnaOk(e, list.id)}>
                             {list.fileName}
                             <div style={{float : "right"}}>{type}</div>
                         </div>
-                        <div style={{display:'none'}}>
+                        <div id="listContent" style={{display:'none'}}>
                             {list.content}
                         </div>
                     </div>
@@ -448,8 +451,11 @@ export default class Option extends React.Component{
         )
     }
 
-    //------------------------------------------------질문 읽음 표시------------------------------------------
-    qnaOk = (id) =>{
+    //------------------------------------------------질문 읽음 표시----------------------------------------------------------------
+    qnaOk = (e, id) =>{
+        const listContent = e.target.parentElement.children[1];
+        if(listContent.style.display === "none") listContent.style.display = "block";
+        else listContent.style.display = "none";
         const qnaOkUrl = this.urlObj.qnaOk + id;
         axios.post(qnaOkUrl)
         .then((res) =>{
@@ -597,6 +603,9 @@ export default class Option extends React.Component{
         if(this.props.optionState === "qna"){
             this.qnaListAxios();
             return (<div></div>)
+        }
+        if(this.props.optionState === "qnaPlus"){
+            return this.qnaPlus();
         }
         // qna 과목 view
         if(this.props.optionState === "qnaView"){
