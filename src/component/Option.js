@@ -527,6 +527,8 @@ export default class Option extends React.Component{
     //---------------------------------------------------------영상 리스트 map------------------------------------------------------------
     videoListViewMap = () =>{
         const lists1 = this.state.videoList != null ? this.state.videoList.map( ( list ) => {
+            const type = (this.state.userData.userType === "professor" ) ? 
+                    <button onClick={() => {this.subTitleChange(list.id)}}>이름 변경</button> : <button onClick={() => {this.subFaorite()}}> 즐겨 찾기 </button>;
             const subTitle = (list.subTitle != null) ? list.subTitle : list.fileName;
             if(list.favorite === 1) {
                 return (
@@ -546,14 +548,14 @@ export default class Option extends React.Component{
                                 display : "inlineBlock",
                                 float : "right",
                             }}>
-                                <button onClick={() => {this.subTitleChange(list.id)}}>이름 변경</button>
-                                <button onClick={() => {this.subFaorite()}}> 즐겨 찾기 </button>
+                                {type}
                             </div>
                         </div>
                     </div>
                 )
         }}) : null;
         const lists2 = this.state.videoList != null ? this.state.videoList.map( ( list ) => {
+            const type = (this.state.userData.userType === "professor" ) ? <button onClick={() => {this.subTitleChange(list.id)}}>이름 변경</button> : <button onClick={() => {this.subFaorite()}}> 즐겨 찾기 </button>;
             const subTitle = (list.subTitle != null) ? list.subTitle : list.fileName;
             if(list.favorite === 0) {
                 return (
@@ -573,7 +575,7 @@ export default class Option extends React.Component{
                                 display : "inlineBlock",
                                 float : "right",
                             }}>
-                                <button onClick={() => {this.subTitleChange(list.id)}}>이름 변경</button>
+                                {type}
                             </div>
                         </div>
                     </div>
@@ -602,7 +604,7 @@ export default class Option extends React.Component{
     subTitleChange = async(id) => {
         const titleUrl = this.urlObj.videoTitle + id;
         console.log(titleUrl);
-        await axios.post(titleUrl, {data : {subTitle : "change"}})
+        await axios.post(titleUrl, {data : {subTitle : "11111"}})
         .then((res) => {
             console.log(res);
             this.videoListAxios();

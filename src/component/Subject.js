@@ -25,8 +25,10 @@ export default class Subject extends React.Component{
     }
 //-------------------------------- 과목 목록 가져오는 통신 
     getSubject = async (args) => {
+        console.log("misdfnsdf");
         const url = this.urlObj.getSubject + this.state.userData.id;
         await axios.post(url).then( res => {
+            console.log(res);
             this.setState( !args ? 
                 { subjectDatas : res.data.result } : 
                 { subjectDatas : res.data.result,
@@ -77,6 +79,7 @@ export default class Subject extends React.Component{
                         <button onClick={() => { this.teacherStart(list.className, list.id)}}> 수업 시작 </button> 
                     </Link>
                     <button onClick={() => { this.typeInfo("qna", list.id)}} > 질문 </button>
+                    <button onClick={() => { this.typeInfo("video", list.id)}}> 영상보기 </button> 
                 </>
             )
             : (this.state.clickSubject === list.id && this.state.classOnline) ? (
@@ -170,8 +173,10 @@ export default class Subject extends React.Component{
     //--------------과목 삭제
     delSub = async () => {
         const delSubUrl = this.urlObj.delSub + this.state.clickSubject;
+        console.log(delSubUrl);
         await axios.post(delSubUrl)
         .then((res) => {
+            console.log(res);
             this.getSubject();
         })
     }
