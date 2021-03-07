@@ -1,5 +1,6 @@
 import React from "react";
 import axios from "axios";
+import { Link } from 'react-router-dom'
 import Subject from "./Subject";
 import "../css/Home.css";
 import { render } from "@testing-library/react";
@@ -20,14 +21,19 @@ export default class Home extends React.Component{
             createsub   :  url + "main/createsub/",                   // 과목 추가  => userId,  data => sub_name 
             StdPermit   :  url + "list/student/",                     // 학생 가입 대기중인 List 가져오기 => classId
             userAccept  :  url + "main/accept/",                      // 학생 가입 수락 / 거절  =>userId/:classId/:accept
-            fileId      :  url + "file/add/",                         // 파일 추가용 Id 받기 => :userId/:fileType/:subjectId/    
+            typeId      :  url + "file/add/",                         // 파일 추가용 Id 받기 => :userId/:fileType/:subjectId/    
             fileUpload  :  url + "uploadteachingmeterial/",           // 파일 ID를 fileId axios에서 받아와 업로드
             fileList    :  url + "list/teachingmeterial/",            // 파일 리스트  => classId
             fileDown    :  url + "file/download/",                    // 파일 다운 => :fileName
             fileDel     :  url + "delete/teachmeterial/",             // 파일 삭제 => :fileId
+            qnaPlus     :  url + "file/uploadquestion/",              // 학생 질문 추가 => :fileId
             qnaList     :  url + "list/question/",                    // 과목 질문 리스트 => :classId
+            qnaDelOne   :  url + "delete/myquestion/",                // 과목 질문 개별 삭제 => :fileId
             qnaDel      :  url + "delete/allquestion/",               // 과목 질문 전체 삭제 => :classId
             qnaOk       :  url + "main/readquestion/",                // 과목 질문 읽음 표시 => :questionId
+            stdSubIn    :  url + "main/request/",                     // 학생 그룹 참가 => :userId/:classId
+            videoList   :  url + "list/video/",                       // 영상 리스트 => :classId
+            videoTitle  :  url + "file/setsubtitle/",                 // 영상 소제목 변경 => :fileId
         }
     }
 
@@ -89,11 +95,12 @@ export default class Home extends React.Component{
         this.infoChangeFunc();
     }
 
-    logout =() => {
-        // const history = useHistory();
-        // localStorage.clear();
-        // return history.push('');
-    }
+    // logout =() => {
+        
+    //     return (
+    //         <Link to="/"></Link>
+    //     )
+    // }
 
     componentDidMount(){
         console.log(this.state);
@@ -118,11 +125,14 @@ export default class Home extends React.Component{
                         <div className="Home_Logo_User_Name"> {this.state.userData.userName}  </div>
                         <div className="Home_Logo_Btn">
                             <button className="Home_Logo_Btn_InfoChange" onClick={this.infoChangeFunc}> 정보수정 </button>
-                            <button className="Home_Logo_Btn_Logout" onClick={this.logout}> 로그아웃 </button>
+                            <Link to="/">
+                                <button className="Home_Logo_Btn_Logout" onClick={() => {localStorage.clear()}}> 로그아웃 </button>
+                            </Link>
                         </div>
                     </div>
                 </div>
                 <div className="Home_Content_Body">
+                    
                     <Subject userData={this.state.userData} serverUrl={this.serverUrl} />
                 </div>
             </div>

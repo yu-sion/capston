@@ -27,28 +27,43 @@ export default class Subject extends React.Component{
         }).catch( err => console.error(err));
     }
 
+    //수업 시작
+    start = () => {
+        window.open("localhost:3000/teacherclass");
+    }
+
 //---------------------------------과목 목록 띄우는 함수
     prtSubjectList = () => {
         const lists =  this.state.subjectDatas != null ? this.state.subjectDatas.map( list => {
             const color = list.classOnline ? "yellow" : "rgba(204,204,204,0.8)";
 
-            const view = (this.state.clickSubject === list.id) ? (
+            const view = (this.state.clickSubject === list.id && this.state.userData.userType === "professor") ? (
                 <>
                 <button onClick={() => { this.fileInfo(list.id)}} > 자료실 </button>
-                <button > 수업 시작 </button> 
+                <button onClick={this.start}> 수업 시작 </button> 
                 <button onClick={() => { this.qnaInfo(list.id)}} > 질문 </button>
                 </>
             )
-            : null;
+            : (this.state.clickSubject === list.id && this.state.classOnline) ? (
+                <>
+                    <button onClick={() => { this.fileInfo(list.id)}} > 자료실 </button>
+                    <button > 수업 참가 </button> 
+                </>
+            ) : (this.state.clickSubject === list.id) ? (
+                <>
+                    <button onClick={() => { this.typeInfo("file",list.id)}} > 자료실 </button>
+                    <button onClick={() => { this.typeInfo("video", list.id)}}> 영상보기 </button> 
+                    <button onClick={() => { this.typeInfo("qna", list.id)}} > 질문 </button>
+                </>
+            ) : null;
             return (
                 <div className="Sub_Lists" style={{
                     backgroundColor : color,
                     border : "black solid 3px",
                 }}>
                     <input type="checkbox" onClick={()=> this.Home_Content_view_controller(list.id)}></input>
-                    {list.className}
+                    {list.className} 
                     {view}
-                    
                 </div>
             )
         }) : null;
@@ -59,19 +74,11 @@ export default class Subject extends React.Component{
             </div>
         )
     }
-
-    //----------------------------------------------------------------질문---------------------------------------------------------------------
-    qnaInfo = (id) => {
+    
+    //-----------------------------------------------------------영상, 질문, 자료실-------------------------------------------------------------
+    typeInfo = (type, id) => {
         this.setState({
-            option : "qna",
-            clickSub : id,
-        })
-    }
-
-    //---------------------------------------------------------------자료실--------------------------------------------------------------------
-    fileInfo = (id) => {
-        this.setState({
-            option : "file",
+            option : type,
             clickSub : id,
         })
     }
