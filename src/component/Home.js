@@ -3,7 +3,7 @@ import axios from "axios";
 import { Link } from 'react-router-dom'
 import Subject from "./Subject";
 import "../css/Home.css";
-import { render } from "@testing-library/react";
+import { render } from "@testing-library/react"; 
 
 export default class Home extends React.Component{
     constructor(props){
@@ -12,6 +12,7 @@ export default class Home extends React.Component{
         this.state = {
             userData : usrData,  // userMail, userName, userNum, userPhone userType
         }
+
         const url = "http://54.146.88.72:3000/";
         console.log(this.state.userData);
         this.serverUrl = {
@@ -19,6 +20,8 @@ export default class Home extends React.Component{
             InfoChange  :  url + "main/modifyuser/",                  // 정보 수정  => userId , data => name, mail, phone
             getSubject  :  url + "list/subject/",                     // 과목 목록 => userId
             createsub   :  url + "main/createsub/",                   // 과목 추가  => userId,  data => sub_name 
+            infoSub     :  url + "main/updateclassname/",            // 과목 수정 => :classId            
+            delSub      :  url + "delete/class/",                     // 과목 삭제 =>:classId
             StdPermit   :  url + "list/student/",                     // 학생 가입 대기중인 List 가져오기 => classId
             userAccept  :  url + "main/accept/",                      // 학생 가입 수락 / 거절  =>userId/:classId/:accept
             typeId      :  url + "file/add/",                         // 파일 추가용 Id 받기 => :userId/:fileType/:subjectId/    
@@ -75,7 +78,7 @@ export default class Home extends React.Component{
             phone : phone,
         }
         const url = this.serverUrl.InfoChange + this.state.userData.id;
-        await axios.post(url , {data} ).then((result)=>{
+        await axios.post(url , {data} ).then((res)=>{
             const usrData = {
                 // id, userMail, userName, userNum, userPhone userType
                 id : this.state.userData.id,
@@ -95,21 +98,13 @@ export default class Home extends React.Component{
         this.infoChangeFunc();
     }
 
-    // logout =() => {
-        
-    //     return (
-    //         <Link to="/"></Link>
-    //     )
-    // }
 
     componentDidMount(){
         console.log(this.state);
     }
 
     componentDidUpdate(prevProps, prevState){
-        if(this.state.userData != prevState){
 
-        }
     }
 
     render(){
@@ -133,7 +128,7 @@ export default class Home extends React.Component{
                 </div>
                 <div className="Home_Content_Body">
                     
-                    <Subject userData={this.state.userData} serverUrl={this.serverUrl} />
+                    <Subject userData={this.state.userData} serverUrl={this.serverUrl} data={this.props.data} getData={this.props.getData}/>
                 </div>
             </div>
         )   

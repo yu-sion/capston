@@ -1,0 +1,38 @@
+.Note_Frame{
+  display: inline-block;
+  width: 100%;
+  height: 50%;
+}
+.Note_Body{
+  width: 100%;
+  height: 100%;
+}
+
+.Note_Option{
+  width: 100%;
+  height: 50px;
+  border : 1px solid black;
+}
+.Note_Option>div{
+  display: inline-block;
+}
+.Note_Text_Frame{
+  width: 100%;
+}
+.Note_Text_Body{
+  width: 98%;
+  height: 650px;
+  resize: none;
+  text-overflow: scroll;
+  border : 1px solid black;
+  font-size: 12px;
+}
+.Note_Text_Sort_Btn{
+  width: 30px;
+  height: 30px;
+}
+
+option{
+  background-color: blue;
+  color : red;
+}

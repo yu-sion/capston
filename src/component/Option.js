@@ -1,5 +1,7 @@
 import React from "react";
 import axios from "axios";
+import { getDefaultNormalizer } from "@testing-library/react";
+import { Link } from "react-router-dom";
 /*
 
     자료실, 질문, 학생 목록, 영상
@@ -351,7 +353,7 @@ export default class Option extends React.Component{
         // this.qnaUpload();
         console.log("title");
         return(
-                <form>
+                <div>
                     <tr>
                         <td>질문명</td>
                         <td><input type="text" id="title" /></td>
@@ -366,7 +368,7 @@ export default class Option extends React.Component{
                         </td>
                         
                     </tr>
-                </form>
+                </div>
         )
 
 
@@ -400,23 +402,41 @@ export default class Option extends React.Component{
         const lists1 = this.state.qnaList != null ? this.state.qnaList.map( ( list ) => {
             const type = (this.state.userData.userType !== "student") ? null : <button onClick={() => {this.qnaDel(list.id)}}>삭제</button>;
             const color = ( list.check === 1 ) ? "gray" : "red"; 
-            if(list.check === 0) {
-            return (
+            if(this.state.userData.userType === "student") {
+                return (
                     <div style={{
                         border : "black solid 1px",
                         margin : "3px",
                         fontSize : "20px",
                     }}> 
-                        <div style={{color : color, width : "300px",}} onClick={() => this.qnaOk(list.id)}>
+                        <div style={{color : color, width : "100%",}} onClick={() => this.qnaOk(list.id)}>
                             {list.fileName}
-                            <div style={{float : "right"}}>{type}</div>
                         </div>
+                            <div style={{float : "right"}}>{type}</div>
                         <div style={{display:'none'}}>
                             {list.content}
                         </div>
                     </div>
                 )
-        }}) : null;
+            }
+            else{
+                if(list.check === 0) {
+                return (
+                        <div style={{
+                            border : "black solid 1px",
+                            margin : "3px",
+                            fontSize : "20px",
+                        }}> 
+                            <div style={{color : color, width : "300px",}} onClick={(e) => this.qnaOk(e, list.id)}>
+                                {list.fileName}
+                                <div style={{float : "right"}}>{type}</div>
+                            </div>
+                            <div style={{display:'none'}}>
+                                {list.content}
+                            </div>
+                        </div>
+                    )
+        }}}) : null;
         const lists2 = this.state.qnaList != null ? this.state.qnaList.map( ( list ) => {
             const type = (this.state.userData.userType !== "student") ? null : <button onClick={() => {this.qnaDel(list.id)}}>삭제</button>;
             const color = ( list.check === 1 ) ? "gray" : "red"; 
@@ -453,15 +473,16 @@ export default class Option extends React.Component{
 
     //------------------------------------------------질문 읽음 표시----------------------------------------------------------------
     qnaOk = (e, id) =>{
-        const listContent = e.target.parentElement.children[1];
-        if(listContent.style.display === "none") listContent.style.display = "block";
-        else listContent.style.display = "none";
+        if(this.state.userData.userType === "professor") {
+            const listContent = e.target.parentElement.children[1];
+            if(listContent.style.display === "none") listContent.style.display = "block";
+            else listContent.style.display = "none";
         const qnaOkUrl = this.urlObj.qnaOk + id;
         axios.post(qnaOkUrl)
         .then((res) =>{
             console.log(res);
             this.qnaListAxios();
-        })
+        })}
     }
 
     //-------------------------------------------------------비디오 리스트 axios-----------------------------------------------------
@@ -493,7 +514,16 @@ export default class Option extends React.Component{
                 </div>
             )
     }
+    //---------------------------------------------------------다시보기 영상 시작------------
+    videoStart = (fileName, id) =>{
+        this.props.data({
+            fileName : fileName,
+            videoId : id,
+            classId : this.props.clickSub,
+            stdId : this.state.userData.id,
 
+        });
+    }
     //---------------------------------------------------------영상 리스트 map------------------------------------------------------------
     videoListViewMap = () =>{
         const lists1 = this.state.videoList != null ? this.state.videoList.map( ( list ) => {
@@ -507,7 +537,11 @@ export default class Option extends React.Component{
                         fontSize : "20px",
                     }}> 
                         <div>
-                            {subTitle}
+                            <Link to="/replay" >
+                                <div onClick={() => {this.videoStart(list.fileName, list.id)}}>
+                                    {subTitle}
+                                </div>
+                            </Link>
                             <div style={{
                                 display : "inlineBlock",
                                 float : "right",
@@ -530,7 +564,11 @@ export default class Option extends React.Component{
                         fontSize : "20px",
                     }}> 
                         <div>
-                            {subTitle}
+                            <Link to="/replay" >
+                                <div onClick={() => {this.videoStart(list.fileName, list.id)}}>
+                                    {subTitle}
+                                </div>
+                            </Link>
                             <div style={{
                                 display : "inlineBlock",
                                 float : "right",
@@ -571,6 +609,30 @@ export default class Option extends React.Component{
         })
     }
 
+    //-------------------------------------------과목 수정 뷰------------------------------------------
+    infoSub = () => {
+        console.log("dsdfdsfsdf");
+        return (
+            <div>
+                <h2>
+                    수정할 과목 명을 입력해 주세요.
+                </h2>
+                <input type="text" id="infoSubValue"/>
+                <button onClick={(e) => {this.infoSubAxios(e)}}>수정하기</button>
+            </div>
+        )
+    }
+    //---------------------------------------과목 수정 axios----------------------------------------
+    infoSubAxios = async (e) => {
+        const infoSubUrl = this.urlObj.infoSub + this.props.clickSub;
+        const data = e.target.parentElement.children[1].value;
+        console.log(data);
+        await axios.post(infoSubUrl, {data : {newClassName : data}})
+        .then((res) => {
+            console.log(res);
+            this.prtSubjectStdList();
+        })
+    }
     //-------------------------------------------랜더 설정---------------------------------------------
     render(){
         // 과목 추가
@@ -580,6 +642,11 @@ export default class Option extends React.Component{
         // 과목 리스트
         if(this.props.optionState === "stdList"){
             this.subjectStdList();
+        }
+        // 과목 수정
+        if(this.props.optionState === "infoSub"){
+            console.log("623");
+            return this.infoSub();
         }
         // 선택 과목 학생 리스트
         if(this.props.optionState === "prtStd"){

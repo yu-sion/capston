@@ -1,13 +1,19 @@
+/* eslint-disable react/jsx-no-undef */
 import React from "react";
 import axios from "axios";
 import "../css/Subject.css";
 import Option from "./Option";
+import { Link } from "react-router-dom";
 
 export default class Subject extends React.Component{
     constructor(props){
         super(props);
         this.urlObj = props.serverUrl;
         const userData = props.userData;
+        this.props.data({
+            ...this.props.getData,
+            userId : userData.id,
+        })
         this.state = {
             userData : userData,
             subjectDatas : null,
@@ -15,6 +21,7 @@ export default class Subject extends React.Component{
             option : null,
             clickSubject : null,
         }
+
     }
 //-------------------------------- 과목 목록 가져오는 통신 
     getSubject = async (args) => {
@@ -28,8 +35,33 @@ export default class Subject extends React.Component{
     }
 
     //수업 시작
-    start = () => {
-        window.open("localhost:3000/teacherclass");
+    teacherStart = async (className, id) => {
+        const classStartUrl = this.urlObj.typeId + this.state.userData.id + "/" + 3 + "/" + id;
+
+        await axios.post(classStartUrl, {data : {fileName : className}})
+        .then((res) => {
+            this.props.data({
+                className : className,
+                videoId : res.data.fileId,
+                classId : this.props.clickSub,
+                stdId : this.state.userData.id,
+            });
+        })
+        
+    }
+
+    studentStart = async () => {
+        // const classStartUrl = this.urlObj.typeId + this.state.userData.id + "/" + 3 + "/" + id;
+
+        // await axios.post(classStartUrl, {data : {fileName : className}})
+        // .then((res) => {
+        //     this.props.data({
+        //         className : className,
+        //         videoId : res.data.fileId,
+        //         classId : this.props.clickSub,
+        //         stdId : this.state.userData.id,
+        //     });
+        // })
     }
 
 //---------------------------------과목 목록 띄우는 함수
@@ -38,18 +70,25 @@ export default class Subject extends React.Component{
             const color = list.classOnline ? "yellow" : "rgba(204,204,204,0.8)";
 
             const view = (this.state.clickSubject === list.id && this.state.userData.userType === "professor") ? (
+                // 교수 과목
                 <>
-                <button onClick={() => { this.fileInfo(list.id)}} > 자료실 </button>
-                <button onClick={this.start}> 수업 시작 </button> 
-                <button onClick={() => { this.qnaInfo(list.id)}} > 질문 </button>
+                    <button onClick={() => { this.typeInfo("file", list.id)}} > 자료실 </button>
+                    <Link to="/teacherclass">
+                        <button onClick={() => { this.teacherStart(list.className, list.id)}}> 수업 시작 </button> 
+                    </Link>
+                    <button onClick={() => { this.typeInfo("qna", list.id)}} > 질문 </button>
                 </>
             )
             : (this.state.clickSubject === list.id && this.state.classOnline) ? (
+                // 학생 과목 온라인시
                 <>
-                    <button onClick={() => { this.fileInfo(list.id)}} > 자료실 </button>
-                    <button > 수업 참가 </button> 
+                    <button onClick={() => { this.typeInfo("file", list.id)}} > 자료실 </button>
+                    <Link to="/studentclass">
+                        <button onClick={() => {this.studentStart()}}> 수업 참가 </button>
+                    </Link> 
                 </>
             ) : (this.state.clickSubject === list.id) ? (
+                // 학생 과목 오프라인
                 <>
                     <button onClick={() => { this.typeInfo("file",list.id)}} > 자료실 </button>
                     <button onClick={() => { this.typeInfo("video", list.id)}}> 영상보기 </button> 
@@ -61,7 +100,7 @@ export default class Subject extends React.Component{
                     backgroundColor : color,
                     border : "black solid 3px",
                 }}>
-                    <input type="checkbox" onClick={()=> this.Home_Content_view_controller(list.id)}></input>
+                    <input type="checkbox" onClick={(e)=> this.Home_Content_view_controller(list.id, list.className, e)}></input>
                     {list.className} 
                     {view}
                 </div>
@@ -84,12 +123,28 @@ export default class Subject extends React.Component{
     }
 
     //----------------------------------------------------------오른 쪽 뷰 제어 함수---------------------------------
-    Home_Content_view_controller = (id) => {
+    Home_Content_view_controller = (id, name, e) => {
+        const check = e.target.checked;
+        const infoBtn = document.getElementById("infoBtn");
+        const delBtn = document.getElementById("delBtn");
+        if(check && this.state.userData.userType !== "student") {
+            infoBtn.style.display = "block";
+            delBtn.style.display = "none";
+        }else{
+            delBtn.style.display = "block";
+            infoBtn.style.display = "none";
+        }
+        this.props.data({
+            ...this.props.getData,
+            classId : id,
+            className : name,
+        })
         if(this.state.option !== "prtStd") {
             this.setState({clickSubject : id , option : "stdList"})
         }else{
             this.setState({option : "null"})
         }
+
     }
 
     componentDidMount(){
@@ -112,13 +167,29 @@ export default class Subject extends React.Component{
         })
     }
 
+    //--------------과목 삭제
+    delSub = async () => {
+        const delSubUrl = this.urlObj.delSub + this.state.clickSubject;
+        await axios.post(delSubUrl)
+        .then((res) => {
+            this.getSubject();
+        })
+    }
+
+
     render(){
         return (
             <div>
             <div className="Home_Content_SubjectList_Body" id="subjectList_Body">
                 <div className="Home_Content_Add">
                     <div style={{width:'100%', height:'100%'}}>
-                        <button style={{marginTop:"3px",marginRight:"5px", float:"right", }} onClick={()=>{this.setState({option:"add"})}}> 과목추가 </button>
+                        <div id="delBtn" style={{ display : "block"}}>
+                            <button style={{marginTop:"3px",marginRight:"5px", float:"right", }} onClick={()=>{this.setState({option:"add"})}}> 과목추가 </button>
+                        </div>
+                        <div id="infoBtn" style={{ display : "none" }}>
+                            <button style={{marginTop:"3px",marginRight:"5px", float:"right", }} onClick={() => {this.setOptionState("infoSub")}}> 과목수정 </button>
+                            <button style={{marginTop:"3px",marginRight:"5px", float:"right", }} onClick={this.delSub} > 과목삭제 </button>
+                        </div>
                     </div>
                     <div className="Home_Content_Subject_View">
                         <this.prtSubjectList />
@@ -134,6 +205,7 @@ export default class Subject extends React.Component{
                     clickSub={this.state.clickSubject}
                     getSubject={this.getSubject}
                     setOptionState={this.setOptionState}
+                    data={this.props.data}
                 />
             </div>
         </div>
