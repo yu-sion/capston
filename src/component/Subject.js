@@ -83,11 +83,11 @@ export default class Subject extends React.Component{
                     <button onClick={() => { this.typeInfo("video", list.id)}}> 영상보기 </button> 
                 </>
             )
-            : (this.state.clickSubject === list.id && this.state.classOnline) ? (
+            : (this.state.clickSubject === list.id && this.state.classOnline === 1) ? (
                 // 학생 과목 온라인시
                 <>
                     <button onClick={() => { this.typeInfo("file", list.id)}} > 자료실 </button>
-                    <Link to="/studentclass">
+                    <Link to="/stdclass">
                         <button onClick={() => {this.studentStart()}}> 수업 참가 </button>
                     </Link> 
                 </>
@@ -95,7 +95,7 @@ export default class Subject extends React.Component{
                 // 학생 과목 오프라인
                 <>
                     <button onClick={() => { this.typeInfo("file",list.id)}} > 자료실 </button>
-                    <Link to="/studentclass">
+                    <Link to="/stdclass">
                         <button onClick={() => {this.studentStart()}}> 수업 참가 </button>
                     </Link> 
                     <button onClick={() => { this.typeInfo("video", list.id)}}> 영상보기 </button> 

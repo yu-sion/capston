@@ -25,7 +25,7 @@ export default class Home extends React.Component{
             StdPermit   :  url + "list/student/",                     // 학생 가입 대기중인 List 가져오기 => classId
             userAccept  :  url + "main/accept/",                      // 학생 가입 수락 / 거절  =>userId/:classId/:accept
             typeId      :  url + "file/add/",                         // 파일 추가용 Id 받기 => :userId/:fileType/:subjectId/    
-            fileUpload  :  url + "uploadteachingmeterial/",           // 파일 ID를 fileId axios에서 받아와 업로드
+            fileUpload  :  url + "file/uploadteachingmeterial/",           // 파일 ID를 fileId axios에서 받아와 업로드
             fileList    :  url + "list/teachingmeterial/",            // 파일 리스트  => classId
             fileDown    :  url + "file/download/",                    // 파일 다운 => :fileName
             fileDel     :  url + "delete/teachmeterial/",             // 파일 삭제 => :fileId
