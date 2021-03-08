@@ -53,17 +53,18 @@ export default class Subject extends React.Component{
     }
 
     studentStart = async () => {
-        // const classStartUrl = this.urlObj.typeId + this.state.userData.id + "/" + 3 + "/" + id;
+        const classStartUrl = this.urlObj.stdClass + this.state.clickSubject;
 
-        // await axios.post(classStartUrl, {data : {fileName : className}})
-        // .then((res) => {
-        //     this.props.data({
-        //         className : className,
-        //         videoId : res.data.fileId,
-        //         classId : this.props.clickSub,
-        //         stdId : this.state.userData.id,
-        //     });
-        // })
+        await axios.post(classStartUrl)
+        .then((res) => {
+            console.log(res);
+            this.props.data({
+                className : res.data.result.id,
+                videoId : res.data.fileId,
+                classId : this.props.clickSub,
+                stdId : this.state.userData.id,
+            });
+        })
     }
 
 //---------------------------------과목 목록 띄우는 함수
@@ -94,6 +95,9 @@ export default class Subject extends React.Component{
                 // 학생 과목 오프라인
                 <>
                     <button onClick={() => { this.typeInfo("file",list.id)}} > 자료실 </button>
+                    <Link to="/studentclass">
+                        <button onClick={() => {this.studentStart()}}> 수업 참가 </button>
+                    </Link> 
                     <button onClick={() => { this.typeInfo("video", list.id)}}> 영상보기 </button> 
                     <button onClick={() => { this.typeInfo("qna", list.id)}} > 질문 </button>
                 </>

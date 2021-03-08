@@ -37,6 +37,7 @@ export default class Home extends React.Component{
             stdSubIn    :  url + "main/request/",                     // 학생 그룹 참가 => :userId/:classId
             videoList   :  url + "list/video/",                       // 영상 리스트 => :classId
             videoTitle  :  url + "file/setsubtitle/",                 // 영상 소제목 변경 => :fileId
+            stdClass    :  url + "file/get/",                         // 학생쪽 수업 시작 => :classId
         }
     }
 
